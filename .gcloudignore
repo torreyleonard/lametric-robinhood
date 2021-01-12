@@ -1,0 +1,10 @@
+#!include:Dockerfile
+**/.git
+**/node_modules
+.idea/
+dist/
+.env
+.DS_Store
+logs/
+.editorconfig
+.gitignore

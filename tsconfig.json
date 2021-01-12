@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+	"module": "commonjs",
+	"skipLibCheck": true,
+	"target": "es6",
+	"sourceMap": true,
+	"noImplicitAny": false,
+	"sourceRoot": "/",
+	"outDir": "./dist",
+	"moduleResolution": "node",
+	"allowSyntheticDefaultImports": true,
+	"emitDecoratorMetadata": true,
+	"experimentalDecorators": true,
+	"lib": [
+	  "es2016",
+	  "es2019"
+	],
+	"typeRoots": [
+	  "./types"
+	]
+  },
+  "include": [
+	"./src"
+  ]
+}

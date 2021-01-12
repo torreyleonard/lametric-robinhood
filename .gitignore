@@ -1,0 +1,8 @@
+node_modules/
+.idea/
+dist/
+.env
+.DS_Store
+Dockerfile
+log/
+deploy.sh
