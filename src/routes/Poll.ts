@@ -10,7 +10,6 @@ import { AccountId, Authenticate, GetHistoricals } from "../lib/Robinhood";
  *      3. Check cache and market hours
  *      4. Using req.query, check which items should be sent
  *      5. Authenticate the user and get daily historicals (chart data)
- *      6.
  *
  */
 async function Poll(req: Request, res: Response) {

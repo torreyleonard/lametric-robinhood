@@ -1,6 +1,7 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { v4 as uuidv4 } from "uuid";
 import Logger from "../utils/Logger";
+import HttpRequest from "./HttpRequest";
 import { getRedisAsync, setRedisAsync } from "./Redis";
 
 const API_URL = "https://api.robinhood.com/";
@@ -9,16 +10,18 @@ const DEVICE_TOKEN = uuidv4();
 function handleError(error: AxiosError|Error) {
 	if (Object.prototype.hasOwnProperty.call(error, "response")) {
 		const response = (error as AxiosError).response;
-		Logger.error(JSON.stringify(response.data, null, 2));
-		const keys = Object.keys(response.data);
-		const message = response.data[keys[0]];
-		if (message.includes("challenge")) {
-			throw new Error("You must enable two-factor authentication in the Robinhood app.");
+		if (response) {
+			Logger.error(JSON.stringify(response.data, null, 2));
+			const keys = Object.keys(response.data);
+			const message = response.data[keys[0]];
+			if (message.includes("challenge")) {
+				throw new Error("You must enable two-factor authentication in the Robinhood app.");
+			}
+			if (message.includes("valid code")) {
+				throw new Error("Re-login required. Remove MFA token and * from password field in LaMetric app.");
+			}
+			throw new Error(message);
 		}
-		if (message.includes("valid code")) {
-			throw new Error("Re-login required. Remove MFA token and * from password field in LaMetric app.");
-		}
-		throw new Error(message);
 	}
 	throw error;
 }
@@ -39,7 +42,7 @@ export async function Authenticate(username: string, password: string, mfa_code?
 		if (existing) {
 			return JSON.parse(existing);
 		}
-		const { data } = await axios({
+		const { data } = await HttpRequest({
 			method: "post",
 			url: API_URL + "oauth2/token/",
 			data: {
@@ -69,7 +72,7 @@ export async function AccountId(access_token: string): Promise<string> {
 		if (existing) {
 			return existing;
 		}
-		const { data } = await axios({
+		const { data } = await HttpRequest({
 			method: "get",
 			url: API_URL + "accounts/",
 			headers: {
@@ -115,7 +118,7 @@ export async function GetHistoricals(
 	interval: string,
 ): Promise<HistoricalsResponse> {
 	try {
-		const { data } = await axios({
+		const { data } = await HttpRequest({
 			method: "get",
 			url: API_URL + "portfolios/historicals/" + accountId + "/",
 			headers: {

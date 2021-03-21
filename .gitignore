@@ -6,3 +6,4 @@ dist/
 Dockerfile
 log/
 deploy.sh
+test.http
